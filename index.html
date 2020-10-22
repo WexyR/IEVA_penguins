@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Activités three.js</title>
+		<link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+	<script src="lib/three.min.js"></script>
+	<script src="lib/MTLLoader.js"></script>
+	<script src="lib/OBJLoader.js"></script>
+	<script src="lib/perlin.js"></script>
+	<script src="controleur.js"></script>
+	<script src="prims.js"></script>
+	<script src="sim.js"></script>
+	<script src="projet.js"></script>
+	<script>
+		var sim = new Appli() ; 
+		sim.init() ;
+		sim.actualiser() ;
+	</script>
+</html>
