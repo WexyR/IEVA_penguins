@@ -3,6 +3,10 @@
 // Spécialisation des classes Sim et Acteur pour un projet particulier
 // ======================================================================================================================
 
+// var penguin = require("penguin.js");
+
+
+
 function Appli(){
 	Sim.call(this) ;
 }
@@ -15,14 +19,14 @@ Appli.prototype.creerScene = function(params){
 	this.scene.add(new THREE.AxesHelper(3.0)) ;
 	this.scene.add(creerSol()) ;
 
-	var tux = new Acteur1("tux1",{path:"assets/obj/pingouin",obj:"penguin",mtl:"penguin"},this) ;
+	var tux = new Penguin("tux1", {}, this);
 	this.addActeur(tux) ;
 
-	maplength = 10
+	maplength = 10;
 
-	for (j=-maplength; j<maplength; j++){
-		for (i=-maplength; i<maplength; i++){
-			if(noise.perlin2(i/10, j/10)<=0.1){
+	for (j=-maplength; j<=maplength; j++){
+		for (i=-maplength; i<=maplength; i++){
+			if(noise.perlin2(i/10, j/10)<=0){
 				var hij = new Herbe("herbe"+(i+100*j),{couleur:0xaaff55},this) ;
 				hij.setPosition(i,0.2,j) ;
 				hij.matrixAutoUpdate  = false;
@@ -30,7 +34,7 @@ Appli.prototype.creerScene = function(params){
 			}
 		}
 	}
-	var herbe1 = new Herbe("herbe1",{},this) ;
+	var herbe1 = new Herbe("herbe1", {}, this) ;
 	this.addActeur(herbe1) ;
 
 	var herbe2 = new Herbe("herbe2",{couleur:0xaaff55},this) ;
@@ -52,7 +56,8 @@ function Acteur1(nom,data,sim){
 	var fObj       = data.obj + ".obj" ;
 	var fMtl       = data.mtl + ".mtl" ;
 
-	var obj = chargerObj("tux1",repertoire,fObj,fMtl) ;
+
+	let obj = chargerObj(name,repertoire,fObj,fMtl) ;
 	this.setObjet3d(obj) ;
 }
 
