@@ -30,6 +30,8 @@ function Penguin(name,data,sim){
 	this.focus_distance = 5;
 	this.nimbus_distance = 8;
 
+	this.target = null;
+	this.speed = 0.03;
 
 	//t0 and random durations for behaviors
 	this.IDLE_t0 = 0;
@@ -53,17 +55,17 @@ Penguin.prototype.actualiser = function(dt){
 
 	switch(this.state){
 		case penguin_states.IDLE:
-			if(t >= this.IDLE_t0+this.IDLE_duration){
-				this.IDLE_t0 = t;
-				this.IDLE_duration = Math.random()*10;
-				console.log("change direction");
-			} else {
-				this.setOrientation(this.IDLE_t0) ;
-				this.setPosition(2*Math.sin(t),0.0,3*Math.cos(2*t)) ;
-				// console.log(2*Math.sin(t),0.0,3*Math.cos(2*t));
-				break;
+			if(this.target==null || this.objet3d.position.distanceTo(this.target.objet3d.position) <= 0.5){
+				this.update_target(t);
 			}
+			if(this.target != null){
+				let direction = this.target.objet3d.position.clone();
+				direction.setComponent(1, 0);
+				this.objet3d.lookAt(direction);
 
+				this.objet3d.translateZ(this.speed);
+			}
+			break;
 
 		case penguin_states.EAT:
 			break;
@@ -78,6 +80,11 @@ Penguin.prototype.actualiser = function(dt){
 Penguin.prototype.update_state_machine = function(t){
 	switch(this.state){
 		case penguin_states.IDLE:
+			if(t >= this.IDLE_t0+this.IDLE_duration){
+				this.IDLE_t0 = t;
+				this.IDLE_duration = Math.random()*10;
+				this.update_target(t);
+			}
 			break;
 
 		case penguin_states.EAT:
@@ -87,4 +94,34 @@ Penguin.prototype.update_state_machine = function(t){
 			break;
 
 	}
+}
+
+Penguin.prototype.inFocus = function(actor){
+	return  this.objet3d.position.distanceTo(actor.objet3d.position) <= this.focus_distance;
+}
+
+Penguin.prototype.inNimbus = function(actor){
+	return this.objet3d.position.distanceTo(actor.objet3d.position) <= this.nimbus_distance;
+}
+
+Penguin.prototype.update_target = function(t){
+
+	let grass = [];
+	for (let i=0; i<this.sim.acteurs.length; ++i){
+		if(this.sim.acteurs[i].nom.substring(0,5) == "herbe"){
+
+			if(this.inFocus(this.sim.acteurs[i])){
+				grass.push(this.sim.acteurs[i]);
+			}
+		}
+	}
+	if(grass.length > 0){
+		const random = Math.floor(Math.random() * grass.length);
+
+		this.target = grass[random];
+
+	} else {
+		this.target = null;
+	}
+
 }
