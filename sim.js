@@ -102,6 +102,9 @@ function Acteur(nom,data,sim){
 	this.nom = nom ;
 	this.objet3d = null ;
 	this.sim = sim ;
+	this.focus_distance = 5; //can see
+	this.nimbus_distance = 8; //can be feeled
+
 }
 
 // Affectation d'une incarnation à un acteur
@@ -132,5 +135,12 @@ Acteur.prototype.setVisible = function(v){
 	}
 }
 
+Acteur.prototype.canFocus = function(other){
+	return  this.objet3d.position.distanceTo(other.objet3d.position) <= this.focus_distance;
+}
+
+Acteur.prototype.inNimbusOf = function(other){
+	return other.objet3d.position.distanceTo(this.objet3d.position) <= other.nimbus_distance;
+}
 
 Acteur.prototype.actualiser = function(dt){}
