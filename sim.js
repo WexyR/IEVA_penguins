@@ -82,8 +82,8 @@ Sim.prototype.actualiser = function(dt){
 	// Boucle ACTION
 	// =============
 
-	var n = this.acteurs.length ;
-	for(var i=0; i<n; i++){
+
+	for(var i=0; i<this.acteurs.length; i++){
 		this.acteurs[i].actualiser(dt) ;
 	} ;
 
@@ -102,6 +102,9 @@ function Acteur(nom,data,sim){
 	this.nom = nom ;
 	this.objet3d = null ;
 	this.sim = sim ;
+	this.focus_distance = 5; //can see
+	this.nimbus_distance = 8; //can be feeled
+
 }
 
 // Affectation d'une incarnation à un acteur
@@ -128,9 +131,16 @@ Acteur.prototype.setOrientation = function(cap){
 // Modification de la visibilité de l'acteur
 Acteur.prototype.setVisible = function(v){
 	if(this.objet3d){
-		this.objet3d.isVisible = v ;
+		this.objet3d.visible = v ;
 	}
 }
 
+Acteur.prototype.canFocus = function(other){
+	return  this.objet3d.position.distanceTo(other.objet3d.position) <= this.focus_distance;
+}
+
+Acteur.prototype.inNimbusOf = function(other){
+	return other.objet3d.position.distanceTo(this.objet3d.position) <= other.nimbus_distance;
+}
 
 Acteur.prototype.actualiser = function(dt){}
