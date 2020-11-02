@@ -27,7 +27,8 @@ Appli.prototype.creerScene = function(params){
 	for (j=-maplength; j<=maplength; j++){
 		for (i=-maplength; i<=maplength; i++){
 			if(noise.perlin2(i/10, j/10)<=0){
-				var hij = new Herbe("herbe"+(i+100*j),{couleur:0xaaff55},this) ;
+				var hij = new Herbe("herbe"+((i+maplength)+(2*maplength+1)*(j+maplength)),{couleur:0xaaff55},this) ;
+				//console.log("herbe"+((i+maplength)+(2*maplength+1)*(j+maplength)));
 				hij.setPosition(i,0.2,j) ;
 				hij.matrixAutoUpdate  = false;
 				this.addActeur(hij) ;

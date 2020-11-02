@@ -82,8 +82,8 @@ Sim.prototype.actualiser = function(dt){
 	// Boucle ACTION
 	// =============
 
-	var n = this.acteurs.length ;
-	for(var i=0; i<n; i++){
+
+	for(var i=0; i<this.acteurs.length; i++){
 		this.acteurs[i].actualiser(dt) ;
 	} ;
 
@@ -128,7 +128,7 @@ Acteur.prototype.setOrientation = function(cap){
 // Modification de la visibilité de l'acteur
 Acteur.prototype.setVisible = function(v){
 	if(this.objet3d){
-		this.objet3d.isVisible = v ;
+		this.objet3d.visible = v ;
 	}
 }
 
