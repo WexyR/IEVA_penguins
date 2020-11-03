@@ -1,5 +1,5 @@
 // ======================================================================================================================
-// Fonctions utilitaires pour créer des objets graphiques 3d spécifiques aux projets à développer
+// Fonctions utilitaires pour créer des objects graphiques 3d spécifiques aux projets à développer
 // ======================================================================================================================
 
 function createGround(name,params){

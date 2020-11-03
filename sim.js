@@ -100,7 +100,7 @@ Sim.prototype.addActor = function(act){
 
 function Actor(name,data,sim){
 	this.name = name ;
-	this.objet3d = null ;
+	this.object3d = null ;
 	this.sim = sim ;
 	this.focus_distance = 5; //can see
 	this.nimbus_distance = 8; //can be feeled
@@ -109,38 +109,38 @@ function Actor(name,data,sim){
 
 // Affectation d'une incarnation à un actor
 Actor.prototype.setObject3d = function(obj){
-	this.objet3d = obj ;
-	this.sim.scene.add(this.objet3d) ;
+	this.object3d = obj ;
+	this.sim.scene.add(this.object3d) ;
 	//console.log(obj);
 }
 
 // Modification de la position de l'actor
 Actor.prototype.setPosition = function(x,y,z){
-	if(this.objet3d){
-		this.objet3d.position.set(x,y,z) ;
+	if(this.object3d){
+		this.object3d.position.set(x,y,z) ;
 	}
 }
 
 // Modification de l'orientation de l'actor
 Actor.prototype.setOrientation = function(cap){
-	if(this.objet3d){
-		this.objet3d.rotation.y = cap ;
+	if(this.object3d){
+		this.object3d.rotation.y = cap ;
 	}
 }
 
 // Modification de la visibilité de l'actor
 Actor.prototype.setVisible = function(v){
-	if(this.objet3d){
-		this.objet3d.visible = v ;
+	if(this.object3d){
+		this.object3d.visible = v ;
 	}
 }
 
 Actor.prototype.canFocus = function(other){
-	return  this.objet3d.position.distanceTo(other.objet3d.position) <= this.focus_distance;
+	return  this.object3d.position.distanceTo(other.object3d.position) <= this.focus_distance;
 }
 
 Actor.prototype.inNimbusOf = function(other){
-	return other.objet3d.position.distanceTo(this.objet3d.position) <= other.nimbus_distance;
+	return other.object3d.position.distanceTo(this.object3d.position) <= other.nimbus_distance;
 }
 
 Actor.prototype.update = function(dt){}

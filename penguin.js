@@ -98,31 +98,31 @@ Penguin.prototype.update_state_machine = function(t){
 
 Penguin.prototype.idle_behavior = function(dt){
 	if(this.target != null){
-		if(this.objet3d.position.distanceTo(this.target.objet3d.position) <= 0.5){
+		if(this.object3d.position.distanceTo(this.target.object3d.position) <= 0.5){
 			this.target=null;
 		} else {
-			let direction = this.target.objet3d.position.clone();
+			let direction = this.target.object3d.position.clone();
 			direction.setComponent(1, 0);
-			this.objet3d.lookAt(direction);
+			this.object3d.lookAt(direction);
 
-			this.objet3d.translateZ(this.speed);
+			this.object3d.translateZ(this.speed);
 		}
 	}
 }
 
 Penguin.prototype.eat_behavior = function(dt){
 	if(this.target != null){
-		if(this.objet3d.position.distanceTo(this.target.objet3d.position) <= 0.5){
+		if(this.object3d.position.distanceTo(this.target.object3d.position) <= 0.5){
 			//eat the target
 			this.delete_target();
 			this.target=null;
 			this.hunger = 0;
 		} else { //move towards target
-			let direction = this.target.objet3d.position.clone();
+			let direction = this.target.object3d.position.clone();
 			direction.setComponent(1, 0);
-			this.objet3d.lookAt(direction);
+			this.object3d.lookAt(direction);
 
-			this.objet3d.translateZ(this.speed);
+			this.object3d.translateZ(this.speed);
 		}
 	}
 }
