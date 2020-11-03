@@ -11,7 +11,7 @@ function Penguin(name,data,sim){
 
 	data = {path:"assets/obj/pingouin",obj:"penguin",mtl:"penguin"};
 	console.log(data);
-	Acteur.call(this,name,data,sim) ;
+	Actor.call(this,name,data,sim) ;
 
 	var repertoire = data.path + "/" ;
 	var fObj       = data.obj + ".obj" ;
@@ -24,8 +24,8 @@ function Penguin(name,data,sim){
 	this.state = penguin_states.IDLE;
 
 	let obj = chargerObj(name,repertoire,fObj,fMtl) ;
-	// let obj = creerSphere(name) ;
-	this.setObjet3d(obj) ;
+	// let obj = createSphere(name) ;
+	this.setObject3d(obj) ;
 
 	this.target = null;
 	this.speed = 0.03;
@@ -47,11 +47,11 @@ function Penguin(name,data,sim){
 
 }
 
-Penguin.prototype = Object.create(Acteur.prototype) ;
+Penguin.prototype = Object.create(Actor.prototype) ;
 Penguin.prototype.constructor = Penguin ;
 
 
-Penguin.prototype.actualiser = function(dt){
+Penguin.prototype.update = function(dt){
 	// console.log(this.sim.horloge) ;
 
 	var t = this.sim.horloge  ;
@@ -170,11 +170,11 @@ Penguin.prototype.flee_stm_update = function(dt){
 Penguin.prototype.update_target = function(){
 
 	let grass = [];
-	for (let i=0; i<this.sim.acteurs.length; ++i){
-		if(this.sim.acteurs[i].nom.substring(0,5) == "herbe"){
+	for (let i=0; i<this.sim.actors.length; ++i){
+		if(this.sim.actors[i].name.substring(0,5) == "grass"){
 
-			if(this.inNimbusOf(this.sim.acteurs[i]) && this.canFocus(this.sim.acteurs[i])){
-				grass.push(this.sim.acteurs[i]);
+			if(this.inNimbusOf(this.sim.actors[i]) && this.canFocus(this.sim.actors[i])){
+				grass.push(this.sim.actors[i]);
 			}
 		}
 	}
@@ -190,14 +190,14 @@ Penguin.prototype.update_target = function(){
 
 Penguin.prototype.delete_target = function(){
 	if(this.target != null){
-		for (let i=0; i<this.sim.acteurs.length; ++i){
-			if(this.sim.acteurs[i] === this.target){
-				let removed = this.sim.acteurs.splice(i, 1)[0];
+		for (let i=0; i<this.sim.actors.length; ++i){
+			if(this.sim.actors[i] === this.target){
+				let removed = this.sim.actors.splice(i, 1)[0];
 				removed.setVisible(false);
-				removed.actualiser();
+				removed.update();
 				i--;
 			}
 		}
-		//this.sim.acteurs = this.sim.acteurs.filter(function(value, index, arr){ return value !== this.target;})
+		//this.sim.actors = this.sim.actors.filter(function(value, index, arr){ return value !== this.target;})
 	}
 }

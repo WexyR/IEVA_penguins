@@ -1,6 +1,6 @@
 
 // ======================================================================================================================
-// Spécialisation des classes Sim et Acteur pour un projet particulier
+// Spécialisation des classes Sim et Actor pour un projet particulier
 // ======================================================================================================================
 
 // var penguin = require("penguin.js");
@@ -14,44 +14,38 @@ function Appli(){
 Appli.prototype = Object.create(Sim.prototype) ;
 Appli.prototype.constructor = Appli ;
 
-Appli.prototype.creerScene = function(params){
+Appli.prototype.createScene = function(params){
 	params = params || {} ;
 	this.scene.add(new THREE.AxesHelper(3.0)) ;
-	this.scene.add(creerSol()) ;
+	this.scene.add(createGround()) ;
 
 	var tux = new Penguin("tux1", {}, this);
-	this.addActeur(tux) ;
+	this.addActor(tux) ;
 
 	maplength = 10;
 
 	for (j=-maplength; j<=maplength; j++){
 		for (i=-maplength; i<=maplength; i++){
 			if(noise.perlin2(i/10, j/10)<=0){
-				var hij = new Herbe("herbe"+((i+maplength)+(2*maplength+1)*(j+maplength)),{couleur:0xaaff55},this) ;
-				//console.log("herbe"+((i+maplength)+(2*maplength+1)*(j+maplength)));
+				var hij = new Grass("grass"+((i+maplength)+(2*maplength+1)*(j+maplength)),{color:0xaaff55},this) ;
+				//console.log("grass"+((i+maplength)+(2*maplength+1)*(j+maplength)));
 				hij.setPosition(i,0.2,j) ;
 				hij.matrixAutoUpdate  = false;
-				this.addActeur(hij) ;
+				this.addActor(hij) ;
 			}
 		}
 	}
-	var herbe1 = new Herbe("herbe1", {}, this) ;
-	this.addActeur(herbe1) ;
 
-	var herbe2 = new Herbe("herbe2",{couleur:0xaaff55},this) ;
-	herbe2.setPosition(3,2,3) ;
-	this.addActeur(herbe2) ;
-
-	var rocher = new Rocher("rocher",{largeur:3,profondeur:2,hauteur:1.5,couleur:0xffaa22},this);
-	rocher.setPosition(-5,0.75,5) ;
-	this.addActeur(rocher) ;
+	var rock = new Rock("rock",{width:3,depth:2,height:1.5,color:0xffaa22},this);
+	rock.setPosition(-5,0.75,5) ;
+	this.addActor(rock) ;
 }
 
 
 // ========================================================================================================
 
-function Acteur1(nom,data,sim){
-	Acteur.call(this,nom,data,sim) ;
+function Actor1(name,data,sim){
+	Actor.call(this,name,data,sim) ;
 
 	var repertoire = data.path + "/" ;
 	var fObj       = data.obj + ".obj" ;
@@ -59,13 +53,13 @@ function Acteur1(nom,data,sim){
 
 
 	let obj = chargerObj(name,repertoire,fObj,fMtl) ;
-	this.setObjet3d(obj) ;
+	this.setObject3d(obj) ;
 }
 
-Acteur1.prototype = Object.create(Acteur.prototype) ;
-Acteur1.prototype.constructor = Acteur1 ;
+Actor1.prototype = Object.create(Actor.prototype) ;
+Actor1.prototype.constructor = Actor1 ;
 
-Acteur1.prototype.actualiser = function(dt){
+Actor1.prototype.update = function(dt){
 	console.log(this.sim.horloge) ;
 	var t = this.sim.horloge  ;
 	this.setOrientation(t) ;
@@ -73,34 +67,34 @@ Acteur1.prototype.actualiser = function(dt){
 }
 
 
-// La classe décrivant les touffes d'herbe
+// La classe décrivant les touffes d'grass
 // =======================================
 
-function Herbe(nom,data,sim){
-	Acteur.call(this,nom,data,sim) ;
+function Grass(name,data,sim){
+	Actor.call(this,name,data,sim) ;
 
 	var rayon   = data.rayon || 0.25 ;
-	var couleur = data.couleur || 0x00ff00 ;
+	var color = data.color || 0x00ff00 ;
 
-	var sph = creerSphere(nom,{rayon:rayon, couleur:couleur}) ;
-	this.setObjet3d(sph) ;
+	var sph = createSphere(name,{rayon:rayon, color:color}) ;
+	this.setObject3d(sph) ;
 }
-Herbe.prototype = Object.create(Acteur.prototype) ;
-Herbe.prototype.constructor = Herbe ;
+Grass.prototype = Object.create(Actor.prototype) ;
+Grass.prototype.constructor = Grass ;
 
-// La classe décrivant les rochers
+// La classe décrivant les rocks
 // ===============================
 
-function Rocher(nom,data,sim){
-	Acteur.call(this,nom,data,sim) ;
+function Rock(name,data,sim){
+	Actor.call(this,name,data,sim) ;
 
-	var l = data.largeur || 0.25 ;
-	var h = data.hauteur || 1.0 ;
-	var p = data.profondeur || 0.5 ;
-	var couleur = data.couleur || 0x00ff00 ;
+	var l = data.width || 0.25 ;
+	var h = data.height || 1.0 ;
+	var p = data.depth || 0.5 ;
+	var color = data.color || 0x00ff00 ;
 
-	var box = creerBoite(nom,{largeur:l, hauteur:h, profondeur:p, couleur:couleur}) ;
-	this.setObjet3d(box) ;
+	var box = createBoite(name,{width:l, height:h, depth:p, color:color}) ;
+	this.setObject3d(box) ;
 }
-Rocher.prototype = Object.create(Acteur.prototype) ;
-Rocher.prototype.constructor = Rocher ;
+Rock.prototype = Object.create(Actor.prototype) ;
+Rock.prototype.constructor = Rock ;

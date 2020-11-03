@@ -9,46 +9,46 @@ var ControleurCamera = function(object){
 
 	this.angle     = 0.0 ; 
 	this.direction = new THREE.Vector3(1,0,0) ; 
-	this.cible     = new THREE.Vector3(2,1.7,5) ; 
+	this.target     = new THREE.Vector3(2,1.7,5) ; 
 
-	this.vitesse   = 2.0 ; 
+	this.speed   = 2.0 ; 
 
-	this.vitesseAngulaireMax = 0.05 ;
-	this.tauxRotation      = 0.0  ;
+	this.maxAngularSpeed = 0.05 ;
+	this.rotationRatio      = 0.0  ;
 	 
 
-	this.plusHaut  = false ; 
-	this.plusBas   = false ; 
-	this.enAvant   = false ; 
-	this.enArriere = false ; 
-	this.aGauche   = false ; 
-	this.aDroite   = false ; 
+	this.toTop  = false ; 
+	this.toBottom   = false ; 
+	this.toFront   = false ; 
+	this.toBack = false ; 
+	this.toLeft   = false ; 
+	this.toRight   = false ; 
 }
 
 
 ControleurCamera.prototype.update = function(dt){
 
-	if(this.plusHaut)
-		this.position.y += this.vitesse * dt ; 
+	if(this.toTop)
+		this.position.y += this.speed * dt ; 
 
-	if(this.plusBas)
-		this.position.y -= this.vitesse * dt ; 
+	if(this.toBottom)
+		this.position.y -= this.speed * dt ; 
 
-	if(this.aGauche)
-		this.angle += 0.05; //this.vitesseAngulaireMax * this.tauxRotation ; 
+	if(this.toLeft)
+		this.angle += 0.05; //this.maxAngularSpeed * this.rotationRatio ; 
 
 
-	if(this.aDroite)
-		this.angle -= 0.05 ; //this.vitesseAngulaireMax * this.tauxRotation ; 
+	if(this.toRight)
+		this.angle -= 0.05 ; //this.maxAngularSpeed * this.rotationRatio ; 
 
-	if(this.enAvant){
-		this.position.x +=  this.vitesse * dt * Math.cos(this.angle) ; 
-		this.position.z += -this.vitesse * dt * Math.sin(this.angle) ;  
+	if(this.toFront){
+		this.position.x +=  this.speed * dt * Math.cos(this.angle) ; 
+		this.position.z += -this.speed * dt * Math.sin(this.angle) ;  
 	}
 
-	if(this.enArriere){
-		this.position.x -=  this.vitesse * dt * Math.cos(this.angle) ; 
-		this.position.z -= -this.vitesse * dt * Math.sin(this.angle) ;  
+	if(this.toBack){
+		this.position.x -=  this.speed * dt * Math.cos(this.angle) ; 
+		this.position.z -= -this.speed * dt * Math.sin(this.angle) ;  
 	}
 	
 	this.object.position.copy(this.position) ; 
@@ -59,20 +59,20 @@ ControleurCamera.prototype.update = function(dt){
 	if(mouseClicked) {
 		this.object.position.set(ext.x,ext.y,ext.z);
 		this.position.set(ext.x,ext.y,ext.z);
-		this.cible.set(origin.x,origin.y,origin.z);
+		this.target.set(origin.x,origin.y,origin.z);
 		this.direction.set(origin.x-ext.x,origin.y-ext.y,origin.z-ext.z) ; 
 		this.angle = -Math.atan2(this.direction.z,this.direction.x);
 
 		mouseClicked = false ; 
 
 	} else {
-		this.cible.set(this.position.x + Math.cos(this.angle), 
+		this.target.set(this.position.x + Math.cos(this.angle), 
 						this.position.y, 
 						this.position.z - Math.sin(this.angle))	
 		 
 	} ;
 
-	this.object.lookAt(this.cible) ; 
+	this.object.lookAt(this.target) ; 
 
 	
 }
@@ -81,22 +81,22 @@ ControleurCamera.prototype.update = function(dt){
 ControleurCamera.prototype.keyUp = function(event){
 	switch(event.keyCode){
 		case 33 : // HAUT
-			this.plusHaut = false ; 
+			this.toTop = false ; 
 			break ; 
 		case 34 : // BAS
-			this.plusBas = false ;
+			this.toBottom = false ;
 			break ; 
 		case 37 : // GAUCHE
-			this.aGauche = false ; 
+			this.toLeft = false ; 
 			break ; 
 		case 38 : // HAUT
-			this.enAvant = false ;
+			this.toFront = false ;
 			break ; 
 		case 39 : // DROITE
-			this.aDroite = false ;
+			this.toRight = false ;
 			break ; 
 		case 40 : // BAS
-			this.enArriere = false ;
+			this.toBack = false ;
 			break ; 
 	}
 }
@@ -108,22 +108,22 @@ ControleurCamera.prototype.keyDown = function(event){
 	console.log("KEYDOWN") ; 
 	switch(event.keyCode){
 		case 33 : // HAUT
-			this.plusHaut = true ; 
+			this.toTop = true ; 
 			break ; 
 		case 34 : // BAS
-			this.plusBas = true ;
+			this.toBottom = true ;
 			break ; 
 		case 37 : // GAUCHE
-			this.aGauche = true ; 
+			this.toLeft = true ; 
 			break ; 
 		case 38 : // HAUT
-			this.enAvant = true ;
+			this.toFront = true ;
 			break ; 
 		case 39 : // DROITE
-			this.aDroite = true ;
+			this.toRight = true ;
 			break ; 
 		case 40 : // BAS
-			this.enArriere = true ;
+			this.toBack = true ;
 			break ; 
 	}
 }
@@ -147,17 +147,17 @@ ControleurCamera.prototype.mouseMove = function(event){
   mdx = event.movementX ; 
   mdy = event.movementY ;
 
-  if(mdx >  1 && mx > 0) {this.aDroite = true ;  this.aGauche = false} else
-  if(mdx < -1 && mx < 0){this.aDroite = false ; this.aGauche = true} else
-  {this.aDroite = false ; this.aGauche = false};
+  if(mdx >  1 && mx > 0) {this.toRight = true ;  this.toLeft = false} else
+  if(mdx < -1 && mx < 0){this.toRight = false ; this.toLeft = true} else
+  {this.toRight = false ; this.toLeft = false};
   */
   /*
   if(event.movementX > 5){
-    controls.aDroite = true ;
-    controls.aGauche = false ;
+    controls.toRight = true ;
+    controls.toLeft = false ;
   } else if(event.movementX < -5){
-    controls.aDroite = false ;
-    controls.aGauche = true ;
+    controls.toRight = false ;
+    controls.toLeft = true ;
   } 
   */
    

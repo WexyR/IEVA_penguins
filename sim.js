@@ -1,8 +1,8 @@
 
 // ============================================================================================
-// Les deux classes de base : Sim et Acteur
+// Les deux classes de base : Sim et Actor
 //
-// Une instance de Sim fait évoluer l'état des instances de la classe Acteur
+// Une instance de Sim fait évoluer l'état des instances de la classe Actor
 // et les restitue
 // ===========================================================================================
 
@@ -14,7 +14,7 @@ function Sim(){
 	this.controleur = null ;
 	this.horloge    = 0.0 ;
 	this.chrono     = null ;
-	this.acteurs    = [] ;
+	this.actors    = [] ;
 
 	this.textureLoader = new THREE.TextureLoader() ;
 }
@@ -52,7 +52,7 @@ Sim.prototype.init = function(params){
 	this.camera   = cam ;
 	this.renderer = rd ;
 
-	this.creerScene() ;
+	this.createScene() ;
 
 	this.chrono   = new THREE.Clock() ;
 	this.chrono.start() ;
@@ -62,12 +62,12 @@ Sim.prototype.init = function(params){
 // Méthode de création du contenu du monde : à surcharger
 // ======================================================
 
-Sim.prototype.creerScene = function(params){}
+Sim.prototype.createScene = function(params){}
 
 // Boucle de simulation
 // ====================
 
-Sim.prototype.actualiser = function(dt){
+Sim.prototype.update = function(dt){
 
 	var that     = this ;
 
@@ -83,23 +83,23 @@ Sim.prototype.actualiser = function(dt){
 	// =============
 
 
-	for(var i=0; i<this.acteurs.length; i++){
-		this.acteurs[i].actualiser(dt) ;
+	for(var i=0; i<this.actors.length; i++){
+		this.actors[i].update(dt) ;
 	} ;
 
 	this.renderer.render(this.scene,this.camera) ;
 
-	requestAnimationFrame(function(){that.actualiser();}) ;
+	requestAnimationFrame(function(){that.update();}) ;
 }
 
-Sim.prototype.addActeur = function(act){
-	this.acteurs.push(act) ;
+Sim.prototype.addActor = function(act){
+	this.actors.push(act) ;
 }
 
 // ===============================================================================================
 
-function Acteur(nom,data,sim){
-	this.nom = nom ;
+function Actor(name,data,sim){
+	this.name = name ;
 	this.objet3d = null ;
 	this.sim = sim ;
 	this.focus_distance = 5; //can see
@@ -107,40 +107,40 @@ function Acteur(nom,data,sim){
 
 }
 
-// Affectation d'une incarnation à un acteur
-Acteur.prototype.setObjet3d = function(obj){
+// Affectation d'une incarnation à un actor
+Actor.prototype.setObject3d = function(obj){
 	this.objet3d = obj ;
 	this.sim.scene.add(this.objet3d) ;
 	//console.log(obj);
 }
 
-// Modification de la position de l'acteur
-Acteur.prototype.setPosition = function(x,y,z){
+// Modification de la position de l'actor
+Actor.prototype.setPosition = function(x,y,z){
 	if(this.objet3d){
 		this.objet3d.position.set(x,y,z) ;
 	}
 }
 
-// Modification de l'orientation de l'acteur
-Acteur.prototype.setOrientation = function(cap){
+// Modification de l'orientation de l'actor
+Actor.prototype.setOrientation = function(cap){
 	if(this.objet3d){
 		this.objet3d.rotation.y = cap ;
 	}
 }
 
-// Modification de la visibilité de l'acteur
-Acteur.prototype.setVisible = function(v){
+// Modification de la visibilité de l'actor
+Actor.prototype.setVisible = function(v){
 	if(this.objet3d){
 		this.objet3d.visible = v ;
 	}
 }
 
-Acteur.prototype.canFocus = function(other){
+Actor.prototype.canFocus = function(other){
 	return  this.objet3d.position.distanceTo(other.objet3d.position) <= this.focus_distance;
 }
 
-Acteur.prototype.inNimbusOf = function(other){
+Actor.prototype.inNimbusOf = function(other){
 	return other.objet3d.position.distanceTo(this.objet3d.position) <= other.nimbus_distance;
 }
 
-Acteur.prototype.actualiser = function(dt){}
+Actor.prototype.update = function(dt){}
