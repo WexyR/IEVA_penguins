@@ -18,6 +18,9 @@ Appli.prototype.createScene = function(params){
 	params = params || {} ;
 	this.scene.add(new THREE.AxesHelper(3.0)) ;
 	this.scene.add(createGround()) ;
+	var user = new User("user", {}, this);
+	this.addActor(user);
+
 
 	var tux = new Penguin("tux1", {}, this);
 	this.addActor(tux) ;
@@ -39,31 +42,25 @@ Appli.prototype.createScene = function(params){
 	var rock = new Rock("rock",{width:3,depth:2,height:1.5,color:0xffaa22},this);
 	rock.setPosition(-5,0.75,5) ;
 	this.addActor(rock) ;
+	console.log(this.actors);
 }
 
 
 // ========================================================================================================
 
-function Actor1(name,data,sim){
+function User(name,data,sim){
 	Actor.call(this,name,data,sim) ;
-
-	var repertoire = data.path + "/" ;
-	var fObj       = data.obj + ".obj" ;
-	var fMtl       = data.mtl + ".mtl" ;
-
-
-	let obj = chargerObj(name,repertoire,fObj,fMtl) ;
-	this.setObject3d(obj) ;
+	let obj = createSphere(name, {rayon:0, color:0x000000}); //useless object only for position
+	this.setObject3d(obj);
 }
 
-Actor1.prototype = Object.create(Actor.prototype) ;
-Actor1.prototype.constructor = Actor1 ;
+User.prototype = Object.create(Actor.prototype) ;
+User.prototype.constructor = User ;
 
-Actor1.prototype.update = function(dt){
-	console.log(this.sim.horloge) ;
-	var t = this.sim.horloge  ;
-	this.setOrientation(t) ;
-	this.setPosition(2*Math.sin(t),0.0,3*Math.cos(2*t)) ;
+User.prototype.update = function(dt){
+	let pos = this.sim.controleur.position;
+	this.setPosition(pos.x, 0, pos.z);
+	// console.log(this.object3d.position);
 }
 
 
