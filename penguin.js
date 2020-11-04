@@ -72,7 +72,7 @@ Penguin.prototype.update = function(dt){
 			break;
 
 		case penguin_states.FLEE:
-			this.idle_behavior(dt);
+			this.flee_behavior(dt);
 			break;
 
 	}
@@ -101,11 +101,7 @@ Penguin.prototype.idle_behavior = function(dt){
 		if(this.object3d.position.distanceTo(this.target.object3d.position) <= 0.5){
 			this.target=null;
 		} else {
-			let direction = this.target.object3d.position.clone();
-			direction.setComponent(1, 0);
-			this.object3d.lookAt(direction);
-
-			this.object3d.translateZ(this.speed);
+			this.move();
 		}
 	}
 }
@@ -118,21 +114,25 @@ Penguin.prototype.eat_behavior = function(dt){
 			this.target=null;
 			this.hunger = 0;
 		} else { //move towards target
-			let direction = this.target.object3d.position.clone();
-			direction.setComponent(1, 0);
-			this.object3d.lookAt(direction);
-
-			this.object3d.translateZ(this.speed);
+			this.move();
 		}
 	}
 }
 
 Penguin.prototype.flee_behavior = function(dt){
-
+	this.move(1);
 }
 
 
 Penguin.prototype.idle_stm_update = function(t){
+	let user = this.look_for_actor("user");
+	if(user != null){
+		if(user.inNimbusOf(this)){
+			this.state = penguin_states.FLEE;
+			return
+		}
+	}
+
 
 	if(this.target == null || t >= this.IDLE_t0+this.IDLE_duration){ //reached the target or timeout
 
@@ -142,13 +142,22 @@ Penguin.prototype.idle_stm_update = function(t){
 		} else {
 			this.IDLE_t0 = t;
 			this.IDLE_duration = 10; // set timeout to 10sec
-			this.update_target();
+			this.target = this.look_for_actor("grass");
 		}
 
 	}
 }
 
 Penguin.prototype.eat_stm_update = function(t){
+
+	let user = this.look_for_actor("user");
+	if(user != null){
+		if(user.inNimbusOf(this)){
+			this.state = penguin_states.FLEE;
+			return
+		}
+	}
+
 	if(this.EAT_initialized){ //first loop?
 		if(this.target == null) { //reached the target and ate it
 			this.state = penguin_states.IDLE;
@@ -158,20 +167,29 @@ Penguin.prototype.eat_stm_update = function(t){
 	} else {
 		this.EAT_t0 = t;
 		this.EAT_duration = 10; // set timeout to 10sec
-		this.update_target();
+		this.target = this.look_for_actor("grass");
 		this.EAT_initialized = true;
 	}
 }
 
 Penguin.prototype.flee_stm_update = function(dt){
+	let user = this.look_for_actor("user");
+	if(user != null){
+		if(user.inNimbusOf(this)){
+			this.target = user;
+			return;
+		}
+	}
+	this.state = penguin_states.IDLE;
+	this.target = null;
 
 }
 
-Penguin.prototype.update_target = function(){
+Penguin.prototype.look_for_actor = function(actor_name){
 
 	let grass = [];
 	for (let i=0; i<this.sim.actors.length; ++i){
-		if(this.sim.actors[i].name.substring(0,5) == "grass"){
+		if(this.sim.actors[i].name.substring(0,actor_name.length) == actor_name){
 
 			if(this.inNimbusOf(this.sim.actors[i]) && this.canFocus(this.sim.actors[i])){
 				grass.push(this.sim.actors[i]);
@@ -181,11 +199,12 @@ Penguin.prototype.update_target = function(){
 	if(grass.length > 0){
 		const random = Math.floor(Math.random() * grass.length);
 
-		this.target = grass[random];
+		target = grass[random];
 
 	} else {
-		this.target = null;
+		target = null;
 	}
+	return target
 }
 
 Penguin.prototype.delete_target = function(){
@@ -199,5 +218,23 @@ Penguin.prototype.delete_target = function(){
 			}
 		}
 		//this.sim.actors = this.sim.actors.filter(function(value, index, arr){ return value !== this.target;})
+	}
+}
+
+Penguin.prototype.move = function(to_or_awayFrom=0, target=this.target){
+	if(target != null){
+		let direction = this.target.object3d.position.clone();
+		direction.setComponent(1, 0);
+
+		if(to_or_awayFrom == 1){ //moveAwayFrom target
+			let pos = this.object3d.position.clone();
+			pos.setComponent(1, 0);
+			let pos2 = pos.clone();
+			direction = pos.add(direction.negate()).add(pos2);//set symetrical direction
+		}
+
+		this.object3d.lookAt(direction);
+
+		this.object3d.translateZ(this.speed);
 	}
 }
