@@ -150,39 +150,68 @@ Actor.prototype.look_for_actors = function(actor_name, verify_nimbus=true, verif
 
 	let matches = [];
 	let weights = [];
-	let total;
+	let total=0;
 	for (let i=0; i<this.sim.actors.length; ++i){
 		if(this.sim.actors[i].name.substring(0,actor_name.length) == actor_name){
 
 			if((!verify_nimbus || (verify_nimbus && this.inNimbusOf(this.sim.actors[i]))) && (!verify_focus || (verify_focus && this.canFocus(this.sim.actors[i])))){
 				matches.push(this.sim.actors[i]);
 				let dist = this.object3d.position.distanceTo(this.sim.actors[i].object3d.position);
-				total += dist*dist; //squared euclidian dist
-				weights.push(dist*dist);
+				let value = 1/(dist*dist); //squared euclidian dist
+				total += value;
+				weights.push(value);
 			}
 		}
 	}
-	let sum = 0;
-	let cum_rel_weights = [];
+	let rel_weights = [];
 	for (let i=0; i<weights.length; ++i){
 		let rel_weight = weights[i]/total;
-		sum += rel_weight;
-		cum_rel_weights.push(sum);
+		rel_weights.push(rel_weight);
 	}
-	return [matches, cum_rel_weights];
+	// cum_rel_weights[rel_weights.length -1] = 1 //ceil last value, fix float division approximation
+	return [matches, rel_weights];
 }
 
-Actor.prototype.look_for_actor = function(actor_name, nearest=false, verify_nimbus=true, verify_focus=true){
-
+Actor.prototype.look_for_actor = function(actor_name, mode="random", verify_nimbus=true, verify_focus=true){
+	//mode can be "random", "weighted", "nearest"
 	let infos = this.look_for_actors(actor_name, verify_nimbus, verify_focus);
 	let matches = infos[0];
 	let weights = infos[1];
-	console.log(weights);
 
 	if(matches.length > 0){
-		const random = Math.floor(Math.random() * matches.length);
+		if(mode="weighted"){
 
-		target = matches[random];
+			let cum_weights = [weights[0]];
+			for(let i=1; i<weights.length; ++i){
+				cum_weights.push(cum_weights[i-1]+weights[i]);
+			}
+
+			const random = Math.random();
+			let index = 0
+			for (index; index<cum_weights.length; ++index){
+				if(random <= cum_weights[index]){
+					// console.log(index,random, weights[index], random<=weights[index]);
+					break;
+				}
+			}
+			// console.log(weights.length, index, random, weights[0], weights[weights.length-1]);
+			target = matches[index];
+		} else if(mode="nearest"){
+			let max_weight = -1;
+			let index = 0
+			for (let i=0; i<weights.length; ++i){
+				if(max_weight > weights[index]){
+					max_weight = weights[index];
+					index = i;
+				}
+			}
+			// console.log(weights.length, index, random, weights[0], weights[weights.length-1]);
+			target = matches[index];
+		} else {
+			const random = Math.floor(Math.random() * matches.length);
+			target = matches[random];
+		}
+
 
 	} else {
 		target = null;

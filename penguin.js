@@ -31,7 +31,7 @@ function Penguin(name,data,sim){
 	this.speed = 0.03;
 
 	this.hunger = 0;
-	this.hunger_grow_factor = 1/45; //every 45s, 50% to go eat
+	this.hunger_grow_factor = 1/5; //every 45s, 50% to go eat
 
 
 
@@ -167,7 +167,7 @@ Penguin.prototype.eat_stm_update = function(t){
 	} else {
 		this.EAT_t0 = t;
 		this.EAT_duration = 10; // set timeout to 10sec
-		this.target = this.look_for_actor("grass");
+		this.target = this.look_for_actor("grass", "weighted"); //nearest grass
 		this.EAT_initialized = true;
 	}
 }
