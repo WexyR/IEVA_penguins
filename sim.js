@@ -102,8 +102,9 @@ function Actor(name,data,sim){
 	this.name = name ;
 	this.object3d = null ;
 	this.sim = sim ;
-	this.focus_distance = 5; //can see
-	this.nimbus_distance = 8; //can be feeled
+	data = {"focus_distance":5, "nimbus_distance":8} || data;
+	this.focus_distance = data.focus_distance; //can see
+	this.nimbus_distance = data.nimbus_distance; //can be feeled
 
 }
 
@@ -144,3 +145,58 @@ Actor.prototype.inNimbusOf = function(other){
 }
 
 Actor.prototype.update = function(dt){}
+
+Actor.prototype.look_for_actors = function(actor_name, verify_nimbus=true, verify_focus=true){
+
+	let matches = [];
+	let weights = [];
+	let total;
+	for (let i=0; i<this.sim.actors.length; ++i){
+		if(this.sim.actors[i].name.substring(0,actor_name.length) == actor_name){
+
+			if((!verify_nimbus || (verify_nimbus && this.inNimbusOf(this.sim.actors[i]))) && (!verify_focus || (verify_focus && this.canFocus(this.sim.actors[i])))){
+				matches.push(this.sim.actors[i]);
+				let dist = this.object3d.position.distanceTo(this.sim.actors[i].object3d.position);
+				total += dist*dist; //squared euclidian dist
+				weights.push(dist*dist);
+			}
+		}
+	}
+	let sum = 0;
+	let cum_rel_weights = [];
+	for (let i=0; i<weights.length; ++i){
+		let rel_weight = weights[i]/total;
+		sum += rel_weight;
+		cum_rel_weights.push(sum);
+	}
+	return [matches, cum_rel_weights];
+}
+
+Actor.prototype.look_for_actor = function(actor_name, nearest=false, verify_nimbus=true, verify_focus=true){
+
+	let infos = this.look_for_actors(actor_name, verify_nimbus, verify_focus);
+	let matches = infos[0];
+	let weights = infos[1];
+	console.log(weights);
+
+	if(matches.length > 0){
+		const random = Math.floor(Math.random() * matches.length);
+
+		target = matches[random];
+
+	} else {
+		target = null;
+	}
+	return target;
+}
+
+Actor.prototype.delete = function(){
+	for (let i=0; i<this.sim.actors.length; ++i){
+		if(this.sim.actors[i] === this){
+			let removed = this.sim.actors.splice(i, 1)[0];
+			removed.setVisible(false);
+			removed.update();
+			return;
+		}
+	}
+}
