@@ -110,7 +110,7 @@ Penguin.prototype.eat_behavior = function(dt){
 	if(this.target != null){
 		if(this.object3d.position.distanceTo(this.target.object3d.position) <= 0.5){
 			//eat the target
-			this.delete_target();
+			this.target.delete();
 			this.target=null;
 			this.hunger = 0;
 		} else { //move towards target
@@ -185,41 +185,8 @@ Penguin.prototype.flee_stm_update = function(dt){
 
 }
 
-Penguin.prototype.look_for_actor = function(actor_name){
 
-	let grass = [];
-	for (let i=0; i<this.sim.actors.length; ++i){
-		if(this.sim.actors[i].name.substring(0,actor_name.length) == actor_name){
 
-			if(this.inNimbusOf(this.sim.actors[i]) && this.canFocus(this.sim.actors[i])){
-				grass.push(this.sim.actors[i]);
-			}
-		}
-	}
-	if(grass.length > 0){
-		const random = Math.floor(Math.random() * grass.length);
-
-		target = grass[random];
-
-	} else {
-		target = null;
-	}
-	return target
-}
-
-Penguin.prototype.delete_target = function(){
-	if(this.target != null){
-		for (let i=0; i<this.sim.actors.length; ++i){
-			if(this.sim.actors[i] === this.target){
-				let removed = this.sim.actors.splice(i, 1)[0];
-				removed.setVisible(false);
-				removed.update();
-				i--;
-			}
-		}
-		//this.sim.actors = this.sim.actors.filter(function(value, index, arr){ return value !== this.target;})
-	}
-}
 
 Penguin.prototype.move = function(to_or_awayFrom=0, target=this.target){
 	if(target != null){
