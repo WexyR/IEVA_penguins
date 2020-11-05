@@ -33,7 +33,8 @@ function Penguin(name,data,sim){
 	this.hunger = 0;
 	this.hunger_grow_factor = 1/45; //every 45s, 50% to go eat
 
-
+	this.pheromones = new Pheromones(sim);
+	this.lastPheromone = 0;
 
 	//t0 and random durations for behaviors
 	this.IDLE_t0 = 0;
@@ -57,7 +58,11 @@ Penguin.prototype.update = function(dt){
 	var t = this.sim.horloge  ;
 
 	this.update_state_machine(t);
-
+	this.pheromones.update(dt);
+	if (t - this.lastPheromone > 0.5) {
+		this.pheromones.create_pheromone({ radius: 1, position:this.object3d.position.clone() });
+		this.lastPheromone = t;
+	}
 
 	this.hunger += Math.random()*this.hunger_grow_factor*dt;
 	// console.log(this.hunger);
@@ -129,7 +134,7 @@ Penguin.prototype.idle_stm_update = function(t){
 	if(user != null){
 		if(user.inNimbusOf(this)){
 			this.state = penguin_states.FLEE;
-			return
+			return;
 		}
 	}
 
