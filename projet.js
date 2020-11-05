@@ -41,6 +41,8 @@ Appli.prototype.createScene = function(params){
 
 	var rock = new Rock("rock",{width:3,depth:2,height:1.5,color:0xffaa22},this);
 	rock.setPosition(-5,0.75,5) ;
+	rock.object3d.material.transparent = true;
+	rock.object3d.material.opacity=0.7;
 	this.addActor(rock) ;
 	console.log(this.actors);
 }
@@ -50,7 +52,7 @@ Appli.prototype.createScene = function(params){
 
 function User(name,data,sim){
 	Actor.call(this,name,data,sim) ;
-	let obj = createSphere(name, {rayon:0, color:0x000000}); //useless object only for position
+	let obj = createSphere(name, {radius:0, color:0x000000}); //useless object only for position
 	this.setObject3d(obj);
 }
 
@@ -58,7 +60,7 @@ User.prototype = Object.create(Actor.prototype) ;
 User.prototype.constructor = User ;
 
 User.prototype.update = function(dt){
-	let pos = this.sim.controleur.position;
+	let pos = this.sim.controller.position;
 	this.setPosition(pos.x, 0, pos.z);
 	// console.log(this.object3d.position);
 }
@@ -70,10 +72,10 @@ User.prototype.update = function(dt){
 function Grass(name,data,sim){
 	Actor.call(this,name,data,sim) ;
 
-	var rayon   = data.rayon || 0.25 ;
+	var radius   = data.radius || 0.25 ;
 	var color = data.color || 0x00ff00 ;
 
-	var sph = createSphere(name,{rayon:rayon, color:color}) ;
+	var sph = createSphere(name,{radius:radius, color:color}) ;
 	this.setObject3d(sph) ;
 }
 Grass.prototype = Object.create(Actor.prototype) ;
@@ -90,7 +92,7 @@ function Rock(name,data,sim){
 	var p = data.depth || 0.5 ;
 	var color = data.color || 0x00ff00 ;
 
-	var box = createBoite(name,{width:l, height:h, depth:p, color:color}) ;
+	var box = createBox(name,{width:l, height:h, depth:p, color:color}) ;
 	this.setObject3d(box) ;
 }
 Rock.prototype = Object.create(Actor.prototype) ;

@@ -13,7 +13,7 @@ function Penguin(name,data,sim){
 	console.log(data);
 	Actor.call(this,name,data,sim) ;
 
-	var repertoire = data.path + "/" ;
+	var directory = data.path + "/" ;
 	var fObj       = data.obj + ".obj" ;
 	var fMtl       = data.mtl + ".mtl" ;
 
@@ -23,7 +23,7 @@ function Penguin(name,data,sim){
 	this.sim = sim;
 	this.state = penguin_states.IDLE;
 
-	let obj = chargerObj(name,repertoire,fObj,fMtl) ;
+	let obj = loadObj(name,directory,fObj,fMtl) ;
 	// let obj = createSphere(name) ;
 	this.setObject3d(obj) ;
 
@@ -53,9 +53,9 @@ Penguin.prototype.constructor = Penguin ;
 
 
 Penguin.prototype.update = function(dt){
-	// console.log(this.sim.horloge) ;
+	// console.log(this.sim.clock) ;
 
-	var t = this.sim.horloge  ;
+	var t = this.sim.clock  ;
 
 	this.update_state_machine(t);
 	this.pheromones.update(dt);

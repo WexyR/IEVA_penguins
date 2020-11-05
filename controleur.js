@@ -2,7 +2,7 @@
 // Implémentation de la classe qui permet un contrôle interactif de la caméra virtuelle
 // ======================================================================================================================
 
-var ControleurCamera = function(object){
+var ControllerCamera = function(object){
 	this.object    = object ;
 
 	this.position  = new THREE.Vector3(1,1.7,5) ;
@@ -26,7 +26,7 @@ var ControleurCamera = function(object){
 }
 
 
-ControleurCamera.prototype.update = function(dt){
+ControllerCamera.prototype.update = function(dt){
 
 	if(this.toTop)
 		this.position.y += this.speed * dt ;
@@ -78,7 +78,7 @@ ControleurCamera.prototype.update = function(dt){
 }
 
 
-ControleurCamera.prototype.keyUp = function(event){
+ControllerCamera.prototype.keyUp = function(event){
 	switch(event.keyCode){
 		case 33 : // HAUT
 			this.toTop = false ;
@@ -103,7 +103,7 @@ ControleurCamera.prototype.keyUp = function(event){
 
 
 
-ControleurCamera.prototype.keyDown = function(event){
+ControllerCamera.prototype.keyDown = function(event){
 	//mouseClicked=false;
 	console.log("KEYDOWN") ;
 	switch(event.keyCode){
@@ -139,7 +139,7 @@ var ext = new THREE.Vector3() ;
 
 var mx, my, mdx, mdy ;
 
-ControleurCamera.prototype.mouseMove = function(event){
+ControllerCamera.prototype.mouseMove = function(event){
   /*
   event.preventDefault() ;
   mx  = (event.clientX/window.innerWidth)*2-1 ;
@@ -163,7 +163,7 @@ ControleurCamera.prototype.mouseMove = function(event){
 
 }
 
-ControleurCamera.prototype.mouseDown = function(event){
+ControllerCamera.prototype.mouseDown = function(event){
 	event.preventDefault() ;
 	return;
 	mouse.x = (event.clientX/window.innerWidth)*2-1 ;

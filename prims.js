@@ -16,7 +16,7 @@ function createGround(name,params){
 	return mesh ;
 }
 
-function createBoite(name,params){
+function createBox(name,params){
 	params = params || {} ;
 	var width    = params.width    || 0.25 ;
 	var height    = params.height    || 0.25 ;
@@ -34,39 +34,39 @@ function createBoite(name,params){
 
 function createSphere(name,params){
 	params = params || {} ;
-	var rayon   = params.rayon || 0.25 ;
+	var radius   = params.radius || 0.25 ;
 	var color = params.color || 0xffaaaa ;
 	var nameTex  = params.texture || null ;
 
-	var geo  = new THREE.SphereGeometry(rayon,8,8) ;
+	var geo  = new THREE.SphereGeometry(radius,8,8) ;
 	var mat  = new THREE.MeshStandardMaterial({color:color}) ;
 	var mesh = new THREE.Mesh(geo,mat) ;
 
 	return mesh ;
 }
 
-function chargerObj(name,repertoire,nameObj,nameMtl){
+function loadObj(name,directory,nameObj,nameMtl){
 			var mtlLoader = new THREE.MTLLoader() ;
 			var objLoader = new THREE.OBJLoader() ;
-			var groupe    = new THREE.Group() ;
-			groupe.name = name ;
-			mtlLoader.setTexturePath(repertoire);
-			mtlLoader.setPath(repertoire);
+			var group    = new THREE.Group() ;
+			group.name = name ;
+			mtlLoader.setTexturePath(directory);
+			mtlLoader.setPath(directory);
 			mtlLoader.load(nameMtl, function (materials) {
 
     				materials.preload();
 
     				objLoader.setMaterials(materials);
-    				objLoader.setPath(repertoire);
+    				objLoader.setPath(directory);
     				objLoader.load(nameObj, function (object) {
-        				groupe.add(object);
+        				group.add(object);
 					object.name = name ;
-					return groupe ;
+					return group ;
 
     				});
 
 			});
 
-			return groupe ;
+			return group ;
 
 }

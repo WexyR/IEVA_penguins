@@ -11,8 +11,8 @@ function Sim(){
 	this.renderer   = null ;
 	this.scene      = null ;
 	this.camera     = null ;
-	this.controleur = null ;
-	this.horloge    = 0.0 ;
+	this.controller = null ;
+	this.clock    = 0.0 ;
 	this.chrono     = null ;
 	this.actors    = [] ;
 
@@ -27,7 +27,7 @@ Sim.prototype.init = function(params){
 	document.body.appendChild(rd.domElement) ;
 	var cam = new THREE.PerspectiveCamera(45.0,window.innerWidth/window.innerHeight,0.1,1000.0) ;
 	cam.position.set(5.0,1.7,5.0) ;
-	this.controleur = new ControleurCamera(cam) ;
+	this.controller = new ControllerCamera(cam) ;
 
 	var that = this ;
 	window.addEventListener(
@@ -40,10 +40,10 @@ Sim.prototype.init = function(params){
 				) ;
 
 	// Affectation de callbacks aux événements utilisateur
-	document.addEventListener("keyup",    function(e){that.controleur.keyUp(e);}    ,false) ;
-	document.addEventListener("keydown",  function(e){that.controleur.keyDown(e);}  ,false) ;
-	document.addEventListener("mousemove",function(e){that.controleur.mouseMove(e);},false) ;
-	document.addEventListener("mousedown",function(e){that.controleur.mouseDown(e);},false) ;
+	document.addEventListener("keyup",    function(e){that.controller.keyUp(e);}    ,false) ;
+	document.addEventListener("keydown",  function(e){that.controller.keyDown(e);}  ,false) ;
+	document.addEventListener("mousemove",function(e){that.controller.mouseMove(e);},false) ;
+	document.addEventListener("mousedown",function(e){that.controller.mouseDown(e);},false) ;
 
 	scn.add(new THREE.AmbientLight(0xffffff,1.0)) ;
 	scn.add(new THREE.GridHelper(100,20)) ;
@@ -59,7 +59,7 @@ Sim.prototype.init = function(params){
 
 }
 
-// Méthode de création du contenu du monde : à surcharger
+// Méthode de création du contenu du monde : à surload
 // ======================================================
 
 Sim.prototype.createScene = function(params){}
@@ -72,12 +72,12 @@ Sim.prototype.update = function(dt){
 	var that     = this ;
 
 	var dt       = this.chrono.getDelta() ;
-	this.horloge += dt ;
+	this.clock += dt ;
 
 	// Modification de la caméra virtuelle
 	// ===================================
 
-	this.controleur.update(dt) ;
+	this.controller.update(dt) ;
 
 	// Boucle ACTION
 	// =============
