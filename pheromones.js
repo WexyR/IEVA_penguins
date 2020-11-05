@@ -3,15 +3,17 @@ var counter = 0;
 function Pheromone(name,data,sim){
 	Actor.call(this,name,data,sim) ;
 
-	this.age   = data.age   || 100 ;
-	let color = data.color || 0xff00ff ;
-	let radius = data.radius || 1;
+
+	this.age   = 10 || data.age;
+	this.max_age = this.age;
+	let color = 0xff00ff || data.color;
+	let radius = 0.7 ||  data.radius;
 
 	let sph = createSphere(name,{radius:radius, color:color}) ;
 	sph.material.transparent = true;
 	sph.material.opacity = 1;
 	this.setObject3d(sph) ;
-	console.log(this.name + ':' + this.age);
+	// console.log(this.name + ':' + this.age);
 }
 Pheromone.prototype = Object.create(Actor.prototype) ;
 Pheromone.prototype.constructor = Pheromone;
@@ -19,7 +21,7 @@ Pheromone.prototype.constructor = Pheromone;
 Pheromone.prototype.update = function(dt){
 	this.age -= dt;
 	//console.log(this.name + ':' + this.age);
-	this.object3d.material.opacity = this.age/25;
+	this.object3d.material.opacity = this.age/this.max_age;
 	let scale_factor = 30;
 	this.object3d.geometry.scale(1-dt/scale_factor,1-dt/scale_factor,1-dt/scale_factor);
 	if(this.age <= 0) {

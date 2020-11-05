@@ -182,9 +182,10 @@ Actor.prototype.look_for_actor = function(actor_name, mode="random", verify_nimb
 		if(mode="weighted"){
 
 			let cum_weights = [weights[0]];
-			for(let i=1; i<weights.length; ++i){
+			for(let i=1; i<weights.length-1; ++i){
 				cum_weights.push(cum_weights[i-1]+weights[i]);
 			}
+			cum_weights.push(1); //fix float division precision
 
 			const random = Math.random();
 			let index = 0

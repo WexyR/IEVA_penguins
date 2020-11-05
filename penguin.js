@@ -31,7 +31,7 @@ function Penguin(name,data,sim){
 	this.speed = 0.03;
 
 	this.hunger = 0;
-	this.hunger_grow_factor = 1/5; //every 45s, 50% to go eat
+	this.hunger_grow_factor = 1/25; //every 25s, 50% to go eat
 
 	this.pheromones = new Pheromones(sim);
 	this.lastPheromone = 0;
