@@ -28,14 +28,16 @@ Boids.prototype.update = function(dt) {
 }
 
 Boids.prototype.cohesion = function() {
-	let G = 0;
-	/*
-	for (let i = 0; i < this.entities_in_minbus.look_for_actors("Boids",verify_focus=false); ++i) {
+	let G = new Vector3(0, 0,0);
+	
+	/*for (let i = 0; i < this.entities_in_minbus.look_for_actors("Boids",verify_focus=false); ++i) {
 		G += this.entities[i].position;
 	}*/
 	let i = 0;
 	this.look_for_actors("Boids", verify_focus = false).forEach(
-		e => {G += e[0].position;i++}
+		e => {G += e[0].position;
+			i++;
+		}
 	);
 	G /= i;
 	let Vd = this.maxSpeed * G;
@@ -46,19 +48,29 @@ Boids.prototype.cohesion = function() {
 
 Boids.prototype.separation = function() {
 	let Fs = new Vector3(0, 0, 0);
-	for (let i = 0; i < this.entities_in_focus.length; ++i) {
+	this.look_for_actors("Boids").forEach(e => {
 		Fs.add((this.entities_in_focus[i].position - this.position) /
 			(this.entities_in_focus[i].position - this.position).lenght);
-	}
+		++i;
+	});
+	/*for (let i = 0; i < this.entities_in_focus.length; ++i) {
+		Fs.add((this.entities_in_focus[i].position - this.position) /
+			(this.entities_in_focus[i].position - this.position).lenght);
+	}*/
 	Fs /= i;
 	return Fs;
 }
 
 Boids.prototype.alignement = function() {
 	let Vm = new Vector3(0, 0, 0);
-	for (let i = 0; i < this.entities_in_nimbus.length; ++i) {
+	this.look_for_actors("Boids", verify_focus = false).forEach(
+		e => { Vm.add(e[0].speed);
+			++i;
+		}
+	);
+	/*for (let i = 0; i < this.entities_in_nimbus.length; ++i) {
 		Vm.add(this.entities_in_nimbus[i].speed);
-	}
+	}*/
 	let k = 1;
 	let Fa = k*(Vm/i-this.speed);
 	return Fa;
