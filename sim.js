@@ -99,14 +99,16 @@ Sim.prototype.addActor = function(act){
 // ===============================================================================================
 
 function Actor(name,data,sim){
-	this.name = name ;
+	this.name = name + Actor.ID.toString();
 	this.object3d = null ;
 	this.sim = sim ;
 	data = {"focus_distance":5, "nimbus_distance":8} || data;
 	this.focus_distance = data.focus_distance; //can see
 	this.nimbus_distance = data.nimbus_distance; //can be feeled
+	Actor.ID++;
 
 }
+Actor.ID = 0;
 
 // Affectation d'une incarnation à un actor
 Actor.prototype.setObject3d = function(obj){
@@ -172,14 +174,39 @@ Actor.prototype.look_for_actors = function(actor_name, verify_nimbus=true, verif
 	return [matches, rel_weights];
 }
 
-Actor.prototype.look_for_actor = function(actor_name, mode="random", verify_nimbus=true, verify_focus=true){
+Actor.prototype.look_for_actor = function(actor_name, mode="random", filter_callback=null, verify_nimbus=true, verify_focus=true){
 	//mode can be "random", "weighted", "nearest"
 	let infos = this.look_for_actors(actor_name, verify_nimbus, verify_focus);
-	let matches = infos[0];
-	let weights = infos[1];
+
+	let matches = [];
+	let weights = [];
+
+	// if(actor_name=="Pheromone"){
+	// 	console.log(infos[0]);
+	// }
+	if(filter_callback !== null && infos[0].length !== 0){
+		resultmatches = infos[0].filter(filter_callback);
+		resultweights = infos[1].filter((v,i) => matches.includes(i+1));
+		// resultmatches.forEach((item, i) => {
+		// 	matches.push(item);
+		// });
+		//
+		// resultweights.forEach((item, i) => {
+		// 	weights.push(item);
+		// });
+		matches = resultmatches;
+		weights = resultweights;
+
+	} else {
+		matches = infos[0];
+		weights = infos[1]
+	}
+	// if(actor_name=="Pheromone"){
+	// 	console.log(matches);
+	// }
 
 	if(matches.length > 0){
-		if(mode="weighted"){
+		if(mode=="weighted"){
 
 			let cum_weights = [weights[0]];
 			for(let i=1; i<weights.length-1; ++i){
@@ -197,7 +224,7 @@ Actor.prototype.look_for_actor = function(actor_name, mode="random", verify_nimb
 			}
 			// console.log(weights.length, index, random, weights[0], weights[weights.length-1]);
 			target = matches[index];
-		} else if(mode="nearest"){
+		} else if(mode=="nearest"){
 			let max_weight = -1;
 			let index = 0
 			for (let i=0; i<weights.length; ++i){
