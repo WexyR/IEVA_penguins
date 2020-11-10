@@ -1,13 +1,14 @@
 // JavaScript source code
 var counter = 0;
-function Pheromone(name,data,sim){
+function Pheromone(name,data,sim, parent){
 	Actor.call(this,name,data,sim) ;
 
 
 	this.age   = 10 || data.age;
 	this.max_age = this.age;
 	let color = 0xff00ff || data.color;
-	let radius = 0.7 ||  data.radius;
+	let radius = 0.5 ||  data.radius;
+	this.parent = parent;
 
 	let sph = createSphere(name,{radius:radius, color:color}) ;
 	sph.material.transparent = true;
@@ -47,11 +48,12 @@ Pheromones.prototype.update = function(dt)
 }
 
 Pheromones.prototype.create_pheromone = function(data) {
-	let name = "Pheromone_" + counter;
+
 	//console.log(name,data.position);
 	data.age = 20 + (Math.random() - 0.5) * 5;
-	let phe = new Pheromone(name, data, this.sim);
+	let phe = new Pheromone("Pheromone", data, this.sim, this);
 	phe.setPosition(data.position.x,0.2,data.position.z);
+	this.sim.addActor(phe);
 	this.pheromones.push(phe);
 	counter ++;
 }

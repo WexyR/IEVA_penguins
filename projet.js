@@ -18,19 +18,23 @@ Appli.prototype.createScene = function(params){
 	params = params || {} ;
 	this.scene.add(new THREE.AxesHelper(3.0)) ;
 	this.scene.add(createGround()) ;
+
+	var tux = new Penguin("penguin", {}, this);
+	this.addActor(tux) ;
+
+	var tux2 = new Penguin("penguin", {}, this);
+	tux2.setPosition(6, 0, 6)
+	this.addActor(tux2) ;
+
 	var user = new User("user", {}, this);
 	this.addActor(user);
-
-
-	var tux = new Penguin("tux1", {}, this);
-	this.addActor(tux) ;
 
 	maplength = 10;
 
 	for (j=-maplength; j<=maplength; j++){
 		for (i=-maplength; i<=maplength; i++){
 			if(noise.perlin2(i/10, j/10)<=0){
-				var hij = new Grass("grass"+((i+maplength)+(2*maplength+1)*(j+maplength)),{color:0xaaff55},this) ;
+				var hij = new Grass("grass",{color:0xaaff55},this) ;
 				//console.log("grass"+((i+maplength)+(2*maplength+1)*(j+maplength)));
 				hij.setPosition(i,0.2,j) ;
 				hij.matrixAutoUpdate  = false;
@@ -38,6 +42,7 @@ Appli.prototype.createScene = function(params){
 			}
 		}
 	}
+
 
 	var rock = new Rock("rock",{width:3,depth:2,height:1.5,color:0xffaa22},this);
 	rock.setPosition(-5,0.75,5) ;

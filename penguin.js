@@ -17,10 +17,8 @@ function Penguin(name,data,sim){
 	var fObj       = data.obj + ".obj" ;
 	var fMtl       = data.mtl + ".mtl" ;
 
+	console.log(this.name);
 
-	this.name = name;
-	this.data = data;
-	this.sim = sim;
 	this.state = penguin_states.IDLE;
 
 	let obj = loadObj(name,directory,fObj,fMtl) ;
@@ -137,19 +135,24 @@ Penguin.prototype.idle_stm_update = function(t){
 			return;
 		}
 	}
-
+	// nearest pheromone that is not mine
+	let others_pheromone = this.look_for_actor("Pheromone", "nearest", actor_info => actor_info.parent !== this.pheromones);
 
 	if(this.target == null || t >= this.IDLE_t0+this.IDLE_duration){ //reached the target or timeout
 
 		if(Math.random()<this.hunger){ //randomly start to eat
 			this.state = penguin_states.EAT;
 			this.EAT_initialized = false;
+		} else if (others_pheromone !== null){
+			this.target = others_pheromone;
 		} else {
 			this.IDLE_t0 = t;
 			this.IDLE_duration = 10; // set timeout to 10sec
 			this.target = this.look_for_actor("grass");
 		}
 
+	} else if(others_pheromone !== null) {
+		this.target = others_pheromone;
 	}
 }
 
