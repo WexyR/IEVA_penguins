@@ -210,3 +210,21 @@ Penguin.prototype.move = function(to_or_awayFrom=0, target=this.target){
 		this.object3d.translateZ(this.speed);
 	}
 }
+
+Penguin.prototype.move_to_position = function(to_or_awayFrom=0, target=null){
+	if(target != null){
+		let direction = target.clone();
+		direction.setComponent(1, 0);
+
+		if(to_or_awayFrom == 1){ //moveAwayFrom target
+			let pos = this.object3d.position.clone();
+			pos.setComponent(1, 0);
+			let pos2 = pos.clone();
+			direction = pos.add(direction.negate()).add(pos2);//set symetrical direction
+		}
+
+		this.object3d.lookAt(direction);
+
+		this.object3d.translateZ(this.speed);
+	}
+}

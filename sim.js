@@ -179,7 +179,7 @@ Actor.prototype.look_for_actor = function(actor_name, mode="random", verify_nimb
 	let weights = infos[1];
 
 	if(matches.length > 0){
-		if(mode="weighted"){
+		if(mode=="weighted"){
 
 			let cum_weights = [weights[0]];
 			for(let i=1; i<weights.length-1; ++i){
@@ -197,7 +197,7 @@ Actor.prototype.look_for_actor = function(actor_name, mode="random", verify_nimb
 			}
 			// console.log(weights.length, index, random, weights[0], weights[weights.length-1]);
 			target = matches[index];
-		} else if(mode="nearest"){
+		} else if(mode=="nearest"){
 			let max_weight = -1;
 			let index = 0
 			for (let i=0; i<weights.length; ++i){

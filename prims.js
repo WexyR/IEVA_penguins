@@ -31,6 +31,48 @@ function createBox(name,params){
 	return mesh ;
 }
 
+function createWall(name,params){
+	params = params || {};
+	let radius = params.radius || 10;
+	var roofVertices = [
+		new THREE.Vector3(radius, 10, radius),
+		new THREE.Vector3(-radius, 10, radius), 
+		new THREE.Vector3(-radius, 10, -radius),
+		new THREE.Vector3(radius, 10, -radius), 
+	];
+
+	var material = new THREE.MeshBasicMaterial({
+		color: 0xccffcc,
+		side: THREE.DoubleSide
+	});
+
+	for (var i = 0; i < roofVertices.length; i++) {
+	
+	    var v1 = roofVertices[i];
+	    var v2 = roofVertices[(i+1)%roofVertices.length];//wrap last vertex back to start
+	
+	    var wallGeometry = new THREE.Geometry();
+	
+	    wallGeometry.vertices = [
+	        v1,
+	        v2,
+	        new THREE.Vector3(v1.x, 0, v1.z),
+	        new THREE.Vector3(v2.x, 0, v2.z)
+	    ];
+	
+	    //always the same for simple 2-triangle plane
+	    wallGeometry.faces = [new THREE.Face3(0, 1, 2), new THREE.Face3(1, 2, 3)];
+	
+	    wallGeometry.computeFaceNormals();
+	    wallGeometry.computeVertexNormals();
+	
+	    var wallMesh = new THREE.Mesh(wallGeometry, material);
+		return wallMesh;
+//	    scene.add(wallMesh);
+	}
+	
+}
+
 
 function createSphere(name,params){
 	params = params || {} ;
@@ -69,4 +111,8 @@ function loadObj(name,directory,nameObj,nameMtl){
 
 			return group ;
 
+}
+
+function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
 }

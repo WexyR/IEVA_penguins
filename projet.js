@@ -22,28 +22,64 @@ Appli.prototype.createScene = function(params){
 	this.addActor(user);
 
 
-	var tux = new Penguin("tux1", {}, this);
-	this.addActor(tux) ;
+	var tux0 = new Boids("Boids0", {}, this);
+	tux0.setPosition(0,0,0);
+	this.addActor(tux0) ;
+	var tux1 = new Boids("Boids1", {}, this);
+	tux1.setPosition(1,0,0);
+	this.addActor(tux1) ;
+	var tux2 = new Boids("Boids2", {}, this);
+	tux0.setPosition(1,0,1);
+	this.addActor(tux2) ;
+	var tux3 = new Boids("Boids3", {}, this);
+	tux0.setPosition(0,0,1);
+	this.addActor(tux3) ;
 
-	maplength = 10;
+	maplength = 11;
 
 	for (j=-maplength; j<=maplength; j++){
 		for (i=-maplength; i<=maplength; i++){
 			if(noise.perlin2(i/10, j/10)<=0){
 				var hij = new Grass("grass"+((i+maplength)+(2*maplength+1)*(j+maplength)),{color:0xaaff55},this) ;
 				//console.log("grass"+((i+maplength)+(2*maplength+1)*(j+maplength)));
-				hij.setPosition(i,0.2,j) ;
+				hij.setPosition(i,0,j) ;
 				hij.matrixAutoUpdate  = false;
 				this.addActor(hij) ;
 			}
 		}
 	}
 
-	var rock = new Rock("rock",{width:3,depth:2,height:1.5,color:0xffaa22},this);
-	rock.setPosition(-5,0.75,5) ;
-	rock.object3d.material.transparent = true;
-	rock.object3d.material.opacity=0.7;
-	this.addActor(rock) ;
+	var nbRocks = 3
+	for (i=0;i<nbRocks;++i){
+		var width = getRandomArbitrary(1,3);
+		var depth = getRandomArbitrary(1,3);
+		var height = getRandomArbitrary(0.5,2);
+		var x = getRandomArbitrary(-maplength,maplength)
+		var y = getRandomArbitrary(-maplength,maplength)
+		var rock = new Rock("rock"+i,{width:width,depth:depth,height:height,color:0xffaa22},this);
+		
+		rock.setPosition(x,0,y) ;
+		//rock.object3d.material.transparent = true;
+		//rock.object3d.material.opacity=0.7;
+		this.addActor(rock) ;
+	}
+
+	var wallN = new Rock("rockWallN",{width:0.1,depth:2*(maplength+1),height:0.5,color:0xa00000},this);
+	wallN.setPosition(maplength+1,0,0);
+	this.addActor(wallN);
+
+	var wallW = new Rock("rockWallW",{width:2*(maplength+1),depth:0.1,height:0.5,color:0xa00000},this);
+	wallW.setPosition(0,0,maplength+1);
+	this.addActor(wallN);
+
+	var wallS = new Rock("rockWallS",{width:0.1,depth:2*(maplength+1),height:0.5,color:0xa00000},this);
+	wallS.setPosition(-maplength-1,0,0);
+	this.addActor(wallS);
+
+	var wallE = new Rock("rockWallE",{width:2*(maplength+1),depth:0.1,height:0.5,color:0xa00000},this);
+	wallE.setPosition(0,0,-maplength-1);
+	this.addActor(wallE);
+
 	console.log(this.actors);
 }
 

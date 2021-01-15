@@ -3,7 +3,6 @@ var counter = 0;
 function Pheromone(name,data,sim){
 	Actor.call(this,name,data,sim) ;
 
-
 	this.age   = 10 || data.age;
 	this.max_age = this.age;
 	let color = 0xff00ff || data.color;
@@ -22,7 +21,7 @@ Pheromone.prototype.update = function(dt){
 	this.age -= dt;
 	//console.log(this.name + ':' + this.age);
 	this.object3d.material.opacity = this.age/this.max_age;
-	let scale_factor = 30;
+	let scale_factor = 10;
 	this.object3d.geometry.scale(1-dt/scale_factor,1-dt/scale_factor,1-dt/scale_factor);
 	if(this.age <= 0) {
 		this.delete();

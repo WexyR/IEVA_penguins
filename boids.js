@@ -1,7 +1,7 @@
 // JavaScript source code
 
 function Boids(name, data, sim) {
-	Actor.call(this, name, data, sim);
+	Penguin.call(this, name, data, sim);
 	this.kc = 10;
 	this.ks = 10;
 	this.ka = 10;
@@ -28,7 +28,7 @@ Boids.prototype.update = function(dt) {
 }
 
 Boids.prototype.cohesion = function() {
-	let G = new Vector3(0, 0,0);
+	let G = new THREE.Vector3(0, 0,0);
 	
 	/*for (let i = 0; i < this.entities_in_minbus.look_for_actors("Boids",verify_focus=false); ++i) {
 		G += this.entities[i].position;
@@ -47,7 +47,7 @@ Boids.prototype.cohesion = function() {
 }
 
 Boids.prototype.separation = function() {
-	let Fs = new Vector3(0, 0, 0);
+	let Fs = new THREE.Vector3(0, 0, 0);
 	this.look_for_actors("Boids").forEach(e => {
 		Fs.add((this.entities_in_focus[i].position - this.position) /
 			(this.entities_in_focus[i].position - this.position).lenght);
@@ -62,7 +62,7 @@ Boids.prototype.separation = function() {
 }
 
 Boids.prototype.alignement = function() {
-	let Vm = new Vector3(0, 0, 0);
+	let Vm = new THREE.Vector3(0, 0, 0);
 	this.look_for_actors("Boids", verify_focus = false).forEach(
 		e => { Vm.add(e[0].speed);
 			++i;
