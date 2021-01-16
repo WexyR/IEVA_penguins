@@ -196,7 +196,7 @@ Boids.prototype.idle_behavior = function(dt){
 			if(others_pheromone != null){
 				target = others_pheromone;
 			}else{
-				target = this.look_for_actor("grass", "nearest");
+				target = this.look_for_actor("grass", "weighted");
 			}
 			if(target == null){
 				target = new THREE.Vector3(0, 0, 0);
