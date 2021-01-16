@@ -102,7 +102,7 @@ function Actor(name,data,sim){
 	this.name = name + Actor.ID.toString();
 	this.object3d = null ;
 	this.sim = sim ;
-	data = {"focus_distance":5, "nimbus_distance":8} || data;
+	data = {"focus_distance":10, "nimbus_distance":20} || data;
 	this.focus_distance = data.focus_distance; //can see
 	this.nimbus_distance = data.nimbus_distance; //can be feeled
 	Actor.ID++;
@@ -155,15 +155,17 @@ Actor.prototype.look_for_actors = function(actor_name, verify_nimbus=true, verif
 	let total=0;
 	for (let i=0; i<this.sim.actors.length; ++i){
 		if(this.sim.actors[i].name.substring(0,actor_name.length) == actor_name){
-
-			if((!verify_nimbus || (verify_nimbus && this.inNimbusOf(this.sim.actors[i]))) && (!verify_focus || (verify_focus && this.canFocus(this.sim.actors[i])))){
-				matches.push(this.sim.actors[i]);
-				let dist = this.object3d.position.distanceTo(this.sim.actors[i].object3d.position);
-				let value = 1/(dist*dist); //squared euclidian dist
-				total += value;
-				weights.push(value);
+			if(this.sim.actors[i] !== this){
+				if((!verify_nimbus || (verify_nimbus && this.inNimbusOf(this.sim.actors[i]))) && (!verify_focus || (verify_focus && this.canFocus(this.sim.actors[i])))){
+					matches.push(this.sim.actors[i]);
+					let dist = this.object3d.position.distanceTo(this.sim.actors[i].object3d.position);
+					let value = 1/(dist*dist); //squared euclidian dist
+					total += value;
+					weights.push(value);
+				}
 			}
 		}
+
 	}
 	let rel_weights = [];
 	for (let i=0; i<weights.length; ++i){
@@ -252,7 +254,12 @@ Actor.prototype.delete = function(){
 		if(this.sim.actors[i] === this){
 			let removed = this.sim.actors.splice(i, 1)[0];
 			removed.setVisible(false);
+
 			removed.update();
+			this.object3d.geometry.dispose();
+      this.object3d.material.dispose();
+      //this.object3d = undefined;
+			this.sim.scene.remove(removed);
 			return;
 		}
 	}

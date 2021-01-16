@@ -26,6 +26,27 @@ Appli.prototype.createScene = function(params){
 	tux2.setPosition(6, 0, 6)
 	this.addActor(tux2) ;
 
+
+	var tux3 = new Boids("boids", {}, this);
+	this.addActor(tux3) ;
+	tux3.setPosition(13, 0, 13)
+
+	var tux4 = new Boids("boids", {}, this);
+	tux4.setPosition(10, 0, 10)
+	this.addActor(tux4) ;
+	//
+	var tux5 = new Boids("boids3", {}, this);
+	tux5.setPosition(7, 0, 10)
+	this.addActor(tux5) ;
+
+	var tux6 = new Boids("boids4", {}, this);
+	tux6.setPosition(10, 0, 13)
+	this.addActor(tux6) ;
+
+	var tux7 = new Boids("boids5", {}, this);
+	tux7.setPosition(7, 0, 13)
+	this.addActor(tux7) ;
+
 	var user = new User("user", {}, this);
 	this.addActor(user);
 
@@ -45,10 +66,28 @@ Appli.prototype.createScene = function(params){
 
 
 	var rock = new Rock("rock",{width:3,depth:2,height:1.5,color:0xffaa22},this);
-	rock.setPosition(-5,0.75,5) ;
+	rock.setPosition(0,0.75,0) ;
 	rock.object3d.material.transparent = true;
 	rock.object3d.material.opacity=0.7;
 	this.addActor(rock) ;
+
+	// var wallN = new Rock("rockWallN",{width:0.1,depth:2*(maplength+1),height:0.5,color:0xa00000},this);
+	// wallN.setPosition(maplength+1,0,0);
+	// this.addActor(wallN);
+	//
+	// var wallW = new Rock("rockWallW",{width:2*(maplength+1),depth:0.1,height:0.5,color:0xa00000},this);
+	// wallW.setPosition(0,0,maplength+1);
+	// this.addActor(wallN);
+	//
+	// var wallS = new Rock("rockWallS",{width:0.1,depth:2*(maplength+1),height:0.5,color:0xa00000},this);
+	// wallS.setPosition(-maplength-1,0,0);
+	// this.addActor(wallS);
+	//
+	// var wallE = new Rock("rockWallE",{width:2*(maplength+1),depth:0.1,height:0.5,color:0xa00000},this);
+	// wallE.setPosition(0,0,-maplength-1);
+	// this.addActor(wallE);
+
+
 	console.log(this.actors);
 }
 

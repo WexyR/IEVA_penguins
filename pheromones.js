@@ -4,16 +4,18 @@ function Pheromone(name,data,sim, parent){
 	Actor.call(this,name,data,sim) ;
 
 
-	this.age   = 10 || data.age;
+	this.age   = data.age ||10;
 	this.max_age = this.age;
-	let color = 0xff00ff || data.color;
-	let radius = 0.5 ||  data.radius;
+	let color = data.color || 0xff00ff;
+	let radius = data.radius || 0.5;
 	this.parent = parent;
 
 	let sph = createSphere(name,{radius:radius, color:color}) ;
 	sph.material.transparent = true;
 	sph.material.opacity = 1;
 	this.setObject3d(sph) ;
+
+	this.todiscard = false;
 	// console.log(this.name + ':' + this.age);
 }
 Pheromone.prototype = Object.create(Actor.prototype) ;
@@ -27,6 +29,7 @@ Pheromone.prototype.update = function(dt){
 	this.object3d.geometry.scale(1-dt/scale_factor,1-dt/scale_factor,1-dt/scale_factor);
 	if(this.age <= 0) {
 		this.delete();
+		this.todiscard = true;
 	}
 }
 
@@ -42,7 +45,11 @@ Pheromones.prototype.constructor = Pheromones;
 Pheromones.prototype.update = function(dt)
 {
 	for (let i = 0; i < this.pheromones.length; ++i) {
-		this.pheromones[i].update(dt);
+		if(this.pheromones[i].todiscard){
+			this.pheromones.splice(i, 1);
+		}else{
+			this.pheromones[i].update(dt);
+		}
 	}
 	//this.pheromones.forEach(p => p.update(dt));
 }

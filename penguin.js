@@ -58,7 +58,7 @@ Penguin.prototype.update = function(dt){
 	this.update_state_machine(t);
 	this.pheromones.update(dt);
 	if (t - this.lastPheromone > 0.5) {
-		this.pheromones.create_pheromone({ radius: 1, position:this.object3d.position.clone() });
+		this.pheromones.create_pheromone({ radius: 0.4, position:this.object3d.position.clone(), color:0xff0000});
 		this.lastPheromone = t;
 	}
 
